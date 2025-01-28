@@ -1,11 +1,13 @@
 import "@/styles/globals.css";
 import clsx from "clsx";
 import { Metadata, Viewport } from "next";
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 import { Providers } from "./providers";
 
 import { Fira_Code as FontMono, Inter as FontSans } from "next/font/google";
-import NavBar from "@/components/NavBar";
+import Sidebar from "@/components/Sidebar";
 
 const fontSans = FontSans({
   subsets: ["latin"],
@@ -19,8 +21,8 @@ const fontMono = FontMono({
 
 export const metadata: Metadata = {
   title: {
-    default: "HeyGen Interactive Avatar SDK Demo",
-    template: `%s - HeyGen Interactive Avatar SDK Demo`,
+    default: "Avatar Studio",
+    template: `%s - Avatar Studio`,
   },
   icons: {
     icon: "/heygen-logo.png",
@@ -41,9 +43,14 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body>
-        {/* Removed the header section */}
-        {children}
+      <body className="bg-gray-100 dark:bg-gray-900">
+        <div className="flex">
+          <Sidebar />
+          <div className="flex-1 ml-64 bg-white"> {/* Added bg-white here */}
+            {children}
+          </div>
+        </div>
+        <ToastContainer />
       </body>
     </html>
   );

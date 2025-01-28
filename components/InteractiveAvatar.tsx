@@ -23,7 +23,7 @@ import { useMemoizedFn, usePrevious } from "ahooks";
 
 import InteractiveAvatarTextInput from "./InteractiveAvatarTextInput";
 
-import {AVATARS, STT_LANGUAGE_LIST} from "@/app/lib/constants";
+import { AVATARS, STT_LANGUAGE_LIST } from "@/app/lib/constants";
 
 export default function InteractiveAvatar() {
   const [isLoadingSession, setIsLoadingSession] = useState(false);
@@ -91,8 +91,12 @@ export default function InteractiveAvatar() {
       const res = await avatar.current.createStartAvatar({
         quality: AvatarQuality.Low,
         avatarName: avatarId,
-        knowledgeId: knowledgeId, // Or use a custom `knowledgeBase`.
+        knowledgeBase: "https://www.appclick.ng/about.php" , // Or use a custom `knowledgeBase`.
+        // knowledgeBase: "https://www.appclicktech.net/about-us.php" , // Or use a custom `knowledgeBase`.
+        // knowledgeBase: " Hello you are welcome, what will like to know about Appclick?At AppClick Technology, we offer you top-quality software solutions with optimized interactive designs, empowering you with powerful tools to conquer market challenges and gain a competitive edge. " , // Or use a custom `knowledgeBase`.
+        // knowledgeId: knowledgeId, // Or use a custom `knowledgeBase`.
         voice: {
+          voice_id: "26b2064088674c80b1e5fc5ab1a068eb",
           rate: 1.5, // 0.5 ~ 1.5
           emotion: VoiceEmotion.EXCITED,
           // elevenlabsSettings: {
@@ -126,7 +130,7 @@ export default function InteractiveAvatar() {
       return;
     }
     // speak({ text: text, task_type: TaskType.REPEAT })
-    await avatar.current.speak({ text: text, taskType: TaskType.REPEAT, taskMode: TaskMode.SYNC }).catch((e) => {
+    await avatar.current.speak({ text: text, taskType: TaskType.TALK, taskMode: TaskMode.SYNC }).catch((e) => {
       setDebug(e.message);
     });
     setIsLoadingRepeat(false);
@@ -188,9 +192,9 @@ export default function InteractiveAvatar() {
   return (
     <div className="w-full flex flex-col gap-4">
       <Card>
-        <CardBody className="h-[500px] flex flex-col justify-center items-center">
+        <CardBody className="h-[400px] flex flex-col justify-center items-center">
           {stream ? (
-            <div className="h-[500px] w-[900px] justify-center items-center flex rounded-lg overflow-hidden">
+            <div className="h-[400px] w-[900px] justify-center items-center flex rounded-lg overflow-hidden">
               <video
                 ref={mediaStream}
                 autoPlay
@@ -327,11 +331,11 @@ export default function InteractiveAvatar() {
           )}
         </CardFooter>
       </Card>
-      <p className="font-mono text-right">
+      {/* <p className="font-mono text-right">
         <span className="font-bold">Console:</span>
         <br />
         {debug}
-      </p>
+      </p> */}
     </div>
   );
 }
