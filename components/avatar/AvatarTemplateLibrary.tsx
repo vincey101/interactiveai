@@ -1,6 +1,7 @@
 'use client';
 import React, { useEffect, useState, useRef, useCallback } from 'react';
 import { ArrowLeftIcon, XMarkIcon } from '@heroicons/react/24/outline';
+import { useRouter } from 'next/navigation';
 // import AvatarInteraction from './../AvatarInteraction';
 
 interface TemplateSelectionProps {
@@ -36,44 +37,17 @@ const AvatarCard = React.memo(({ avatar }: { avatar: Avatar }) => {
   const [isPlaying, setIsPlaying] = useState(false);
   const [useImageFallback, setUseImageFallback] = useState(false);
   const videoRef = useRef<HTMLVideoElement>(null);
-  const [showInteraction, setShowInteraction] = useState(false);
-  
+  const router = useRouter();
+
   const handleVideoError = () => {
-    console.log('Video failed to load:', avatar.preview_video_url);
+    console.log('Falling back to image preview');
     setUseImageFallback(true);
   };
 
-  const debouncedPlay = useCallback(async () => {
-    if (!videoRef.current || useImageFallback) return;
-    
-    try {
-      setIsPlaying(true);
-      await new Promise(resolve => setTimeout(resolve, 50));
-      if (videoRef.current && !isPlaying) {
-        await videoRef.current.play();
-      }
-    } catch (error) {
-      if (error instanceof Error && error.name !== 'AbortError') {
-        console.error('Error playing video:', error);
-        setUseImageFallback(true);
-      }
-    }
-  }, [isPlaying, useImageFallback]);
-
-  const debouncedPause = useCallback(() => {
-    if (!videoRef.current || useImageFallback) return;
-    
-    setIsPlaying(false);
-    setTimeout(() => {
-      if (videoRef.current && !isPlaying) {
-        videoRef.current.pause();
-      }
-    }, 50);
-  }, [isPlaying, useImageFallback]);
-
-  // if (showInteraction) {
-  //   return <AvatarInteraction avatar={avatar} onBack={() => setShowInteraction(false)} />;
-  // }
+  const handleSelectAvatar = () => {
+    localStorage.setItem('selectedAvatarId', avatar.avatar_id);
+    router.push('/interactiveAvatar');
+  };
 
   return (
     <div className="group relative rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-shadow bg-white">
@@ -82,41 +56,30 @@ const AvatarCard = React.memo(({ avatar }: { avatar: Avatar }) => {
           <div className="absolute inset-0 bg-gray-200 animate-pulse" />
         )}
         
-        {avatar.preview_video_url && !useImageFallback ? (
+        {!useImageFallback ? (
           <video 
             ref={videoRef}
             className={`w-full h-full object-cover transition-opacity duration-300 ${
               isVideoLoaded ? 'opacity-100' : 'opacity-0'
             }`}
             src={avatar.preview_video_url}
-            poster={avatar.preview_image_url} // Use image as poster
+            poster={avatar.preview_image_url}
             loop
             muted
             playsInline
+            autoPlay
             onLoadedData={() => setIsVideoLoaded(true)}
             onError={handleVideoError}
-            onMouseEnter={debouncedPlay}
-            onMouseLeave={debouncedPause}
-          >
-            {/* Fallback source formats */}
-            <source src={avatar.preview_video_url} type="video/mp4" />
-            <source src={avatar.preview_video_url} type="video/webm" />
-            {/* Image fallback */}
-            <img 
-              src={avatar.preview_image_url} 
-              alt={avatar.avatar_name}
-              className="w-full h-full object-cover"
-            />
-          </video>
+          />
         ) : (
           <img 
-            src={avatar.preview_image_url} 
+            src={avatar.preview_image_url}
             alt={avatar.avatar_name}
             className={`w-full h-full object-cover transition-opacity duration-300 ${
               isImageLoaded ? 'opacity-100' : 'opacity-0'
             }`}
             onLoad={() => setIsImageLoaded(true)}
-            onError={() => console.error('Image failed to load:', avatar.preview_image_url)}
+            onError={() => console.error('Image preview failed to load')}
           />
         )}
       </div>
@@ -126,7 +89,7 @@ const AvatarCard = React.memo(({ avatar }: { avatar: Avatar }) => {
           <span className="text-sm text-gray-500 capitalize">{avatar.gender}</span>
         </div>
         <button 
-          onClick={() => setShowInteraction(true)}
+          onClick={handleSelectAvatar}
           className="mt-3 w-full py-2 bg-gray-900 text-white rounded-lg opacity-0 group-hover:opacity-100 transition-opacity"
         >
           Select Avatar

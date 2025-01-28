@@ -40,6 +40,15 @@ export default function InteractiveAvatar() {
   const avatar = useRef<StreamingAvatar | null>(null);
   const [chatMode, setChatMode] = useState("text_mode");
   const [isUserTalking, setIsUserTalking] = useState(false);
+  const [loadingMessage, setLoadingMessage] = useState<string>("");
+
+  useEffect(() => {
+    const selectedAvatarId = localStorage.getItem('selectedAvatarId');
+    if (selectedAvatarId) {
+      setAvatarId(selectedAvatarId);
+      localStorage.removeItem('selectedAvatarId');
+    }
+  }, []);
 
   async function fetchAccessToken() {
     try {
@@ -60,7 +69,16 @@ export default function InteractiveAvatar() {
 
   async function startSession() {
     setIsLoadingSession(true);
+    setLoadingMessage("Initializing your avatar session... This may take a few seconds.");
+
     const newToken = await fetchAccessToken();
+    if (!newToken) {
+      setLoadingMessage("Having trouble connecting. Please try again.");
+      setIsLoadingSession(false);
+      return;
+    }
+
+    setLoadingMessage("Almost ready! Setting up your interactive experience...");
 
     avatar.current = new StreamingAvatar({
       token: newToken,
@@ -78,6 +96,7 @@ export default function InteractiveAvatar() {
     avatar.current?.on(StreamingEvents.STREAM_READY, (event) => {
       console.log(">>>>> Stream ready:", event.detail);
       setStream(event.detail);
+      setLoadingMessage("");
     });
     avatar.current?.on(StreamingEvents.USER_START, (event) => {
       console.log(">>>>> User started talking:", event);
@@ -91,12 +110,12 @@ export default function InteractiveAvatar() {
       const res = await avatar.current.createStartAvatar({
         quality: AvatarQuality.Low,
         avatarName: avatarId,
-        knowledgeBase: "https://www.appclick.ng/about.php" , // Or use a custom `knowledgeBase`.
+        knowledgeBase: "https://www.appclick.ng/about.php", // Or use a custom `knowledgeBase`.
         // knowledgeBase: "https://www.appclicktech.net/about-us.php" , // Or use a custom `knowledgeBase`.
         // knowledgeBase: " Hello you are welcome, what will like to know about Appclick?At AppClick Technology, we offer you top-quality software solutions with optimized interactive designs, empowering you with powerful tools to conquer market challenges and gain a competitive edge. " , // Or use a custom `knowledgeBase`.
         // knowledgeId: knowledgeId, // Or use a custom `knowledgeBase`.
         voice: {
-          voice_id: "26b2064088674c80b1e5fc5ab1a068eb",
+          // voice_id: "26b2064088674c80b1e5fc5ab1a068eb",
           rate: 1.5, // 0.5 ~ 1.5
           emotion: VoiceEmotion.EXCITED,
           // elevenlabsSettings: {
@@ -118,8 +137,10 @@ export default function InteractiveAvatar() {
       setChatMode("voice_mode");
     } catch (error) {
       console.error("Error starting avatar session:", error);
+      setLoadingMessage("Something went wrong. Please try again.");
     } finally {
       setIsLoadingSession(false);
+      setLoadingMessage("");
     }
   }
   async function handleSpeak() {
@@ -230,7 +251,8 @@ export default function InteractiveAvatar() {
             <div className="h-full justify-center items-center flex flex-col gap-8 w-[500px] self-center">
               <div className="flex flex-col gap-2 w-full">
                 <p className="text-sm font-medium leading-none">
-                  Custom Knowledge ID (optional)
+                  {/* Custom Knowledge ID (optional) */}
+                  Custom Knowledge
                 </p>
                 <Input
                   placeholder="Enter a custom knowledge ID"
@@ -238,19 +260,22 @@ export default function InteractiveAvatar() {
                   onChange={(e) => setKnowledgeId(e.target.value)}
                 />
                 <p className="text-sm font-medium leading-none">
-                  Custom Avatar ID (optional)
+                  {/* Custom Avatar ID (optional) */}
+                  Selected Avatar
                 </p>
                 <Input
                   placeholder="Enter a custom avatar ID"
                   value={avatarId}
                   onChange={(e) => setAvatarId(e.target.value)}
+                  isReadOnly
                 />
-                <Select
+                {/* <Select
                   placeholder="Or select one from these example avatars"
                   size="md"
                   onChange={(e) => {
                     setAvatarId(e.target.value);
                   }}
+                  selectedKeys={avatarId ? [avatarId] : []}
                 >
                   {AVATARS.map((avatar) => (
                     <SelectItem
@@ -260,7 +285,7 @@ export default function InteractiveAvatar() {
                       {avatar.name}
                     </SelectItem>
                   ))}
-                </Select>
+                </Select> */}
                 <Select
                   label="Select language"
                   placeholder="Select language"
@@ -287,7 +312,19 @@ export default function InteractiveAvatar() {
               </Button>
             </div>
           ) : (
-            <Spinner color="default" size="lg" />
+            <div className="flex flex-col items-center justify-center space-y-4">
+              <Spinner color="default" size="lg" />
+              {loadingMessage && (
+                <div className="text-center max-w-md">
+                  <p className="text-transparent bg-clip-text bg-gradient-to-tr from-indigo-500 to-indigo-300 font-medium animate-pulse">
+                    {loadingMessage}
+                  </p>
+                  <p className="text-gray-400 text-xs mt-2">
+                    This process usually takes 10-15 seconds
+                  </p>
+                </div>
+              )}
+            </div>
           )}
         </CardBody>
         <Divider />
