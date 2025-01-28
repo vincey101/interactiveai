@@ -151,14 +151,8 @@ const TemplateSelection = ({ onBack }: TemplateSelectionProps) => {
     try {
       // Only fetch if we haven't loaded all avatars yet
       if (page === 1 || allAvatarsLoaded.length === 0) {
-        const response = await fetch('https://api.heygen.com/v2/avatars', {
-          method: 'GET',
-          headers: {
-            'Accept': 'application/json',
-            'X-Api-Key': `${process.env.NEXT_PUBLIC_HEYGEN_API_KEY}`,
-          },
-        });
-
+        const response = await fetch('/api/avatars'); // Updated to use our API route
+        
         if (!response.ok) {
           const errorData = await response.json();
           throw new Error(`Failed to fetch avatars: ${errorData.message || response.statusText}`);
