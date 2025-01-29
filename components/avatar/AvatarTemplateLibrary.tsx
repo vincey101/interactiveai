@@ -32,17 +32,8 @@ const AvatarSkeleton = () => (
 
 // Avatar card component
 const AvatarCard = React.memo(({ avatar }: { avatar: Avatar }) => {
-  const [isImageLoaded, setIsImageLoaded] = useState(false);
-  const [isVideoLoaded, setIsVideoLoaded] = useState(false);
-  const [isPlaying, setIsPlaying] = useState(false);
-  const [useImageFallback, setUseImageFallback] = useState(false);
-  const videoRef = useRef<HTMLVideoElement>(null);
+  const [isImageLoaded, setIsImageLoaded] = useState(true);
   const router = useRouter();
-
-  const handleVideoError = () => {
-    console.log('Falling back to image preview');
-    setUseImageFallback(true);
-  };
 
   const handleSelectAvatar = () => {
     localStorage.setItem('selectedAvatarId', avatar.avatar_id);
@@ -52,36 +43,13 @@ const AvatarCard = React.memo(({ avatar }: { avatar: Avatar }) => {
   return (
     <div className="group relative rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-shadow bg-white">
       <div className="aspect-video bg-gray-100 relative overflow-hidden">
-        {!isImageLoaded && !isVideoLoaded && (
-          <div className="absolute inset-0 bg-gray-200 animate-pulse" />
-        )}
-        
-        {!useImageFallback ? (
-          <video 
-            ref={videoRef}
-            className={`w-full h-full object-cover transition-opacity duration-300 ${
-              isVideoLoaded ? 'opacity-100' : 'opacity-0'
-            }`}
-            src={avatar.preview_video_url}
-            poster={avatar.preview_image_url}
-            loop
-            muted
-            playsInline
-            autoPlay
-            onLoadedData={() => setIsVideoLoaded(true)}
-            onError={handleVideoError}
-          />
-        ) : (
-          <img 
-            src={avatar.preview_image_url}
-            alt={avatar.avatar_name}
-            className={`w-full h-full object-cover transition-opacity duration-300 ${
-              isImageLoaded ? 'opacity-100' : 'opacity-0'
-            }`}
-            onLoad={() => setIsImageLoaded(true)}
-            onError={() => console.error('Image preview failed to load')}
-          />
-        )}
+        <img 
+          src={avatar.preview_image_url}
+          alt={avatar.avatar_name}
+          className="w-full h-full object-cover"
+          loading="eager"
+          decoding="sync"
+        />
       </div>
       <div className="p-4">
         <div className="flex justify-between items-center">

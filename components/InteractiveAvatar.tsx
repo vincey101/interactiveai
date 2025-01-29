@@ -17,20 +17,24 @@ import {
   Chip,
   Tabs,
   Tab,
+  Tooltip,
 } from "@nextui-org/react";
 import { useEffect, useRef, useState } from "react";
 import { useMemoizedFn, usePrevious } from "ahooks";
+import { MessageSquareText, Mic, ArrowLeft } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 import InteractiveAvatarTextInput from "./InteractiveAvatarTextInput";
 
 import { AVATARS, STT_LANGUAGE_LIST } from "@/app/lib/constants";
 
 export default function InteractiveAvatar() {
+  const router = useRouter();
   const [isLoadingSession, setIsLoadingSession] = useState(false);
   const [isLoadingRepeat, setIsLoadingRepeat] = useState(false);
   const [stream, setStream] = useState<MediaStream>();
   const [debug, setDebug] = useState<string>();
-  const [knowledgeId, setKnowledgeId] = useState<string>("");
+  const [knowledgeBase, setKnowledgeBase] = useState<string>("");
   const [avatarId, setAvatarId] = useState<string>("");
   const [language, setLanguage] = useState<string>('en');
 
@@ -110,9 +114,8 @@ export default function InteractiveAvatar() {
       const res = await avatar.current.createStartAvatar({
         quality: AvatarQuality.Low,
         avatarName: avatarId,
-        knowledgeBase: "https://www.appclick.ng/about.php", // Or use a custom `knowledgeBase`.
-        // knowledgeBase: "https://www.appclicktech.net/about-us.php" , // Or use a custom `knowledgeBase`.
-        // knowledgeBase: " Hello you are welcome, what will like to know about Appclick?At AppClick Technology, we offer you top-quality software solutions with optimized interactive designs, empowering you with powerful tools to conquer market challenges and gain a competitive edge. " , // Or use a custom `knowledgeBase`.
+        knowledgeBase: knowledgeBase,
+        // knowledgeBase: "https://www.appclick.ng/about.php", // Or use a custom `knowledgeBase`.
         // knowledgeId: knowledgeId, // Or use a custom `knowledgeBase`.
         voice: {
           // voice_id: "26b2064088674c80b1e5fc5ab1a068eb",
@@ -125,9 +128,12 @@ export default function InteractiveAvatar() {
           //   use_speaker_boost: false,
           // },
         },
+        video_encoding: {
+          codec: "h264", // Video codec (h264 or vp8)
+        },
         language: language,
         disableIdleTimeout: true,
-      });
+      } as any);
 
       setData(res);
       // default to voice mode
@@ -248,27 +254,39 @@ export default function InteractiveAvatar() {
               </div>
             </div>
           ) : !isLoadingSession ? (
-            <div className="h-full justify-center items-center flex flex-col gap-8 w-[500px] self-center">
+            <div className="h-full justify-center items-center flex flex-col gap-8 w-[500px] self-center relative">
+              <Button
+                isIconOnly
+                className="absolute -left-40 top-0 bg-transparent"
+                onClick={() => router.back()}
+              >
+                <ArrowLeft className="text-black" size={24} />
+              </Button>
               <div className="flex flex-col gap-2 w-full">
                 <p className="text-sm font-medium leading-none">
-                  {/* Custom Knowledge ID (optional) */}
-                  Custom Knowledge
+                  Knowledge Base
                 </p>
                 <Input
-                  placeholder="Enter a custom knowledge ID"
-                  value={knowledgeId}
-                  onChange={(e) => setKnowledgeId(e.target.value)}
+                  placeholder="Enter your knowledge base content or URL"
+                  value={knowledgeBase}
+                  onChange={(e) => setKnowledgeBase(e.target.value)}
+                  className="mb-2"
                 />
-                <p className="text-sm font-medium leading-none">
-                  {/* Custom Avatar ID (optional) */}
-                  Selected Avatar
+                <p className="text-xs text-gray-500 mb-4">
+                  Enter either a URL or text content that will serve as the avatar's knowledge base
                 </p>
-                <Input
-                  placeholder="Enter a custom avatar ID"
-                  value={avatarId}
-                  onChange={(e) => setAvatarId(e.target.value)}
-                  isReadOnly
-                />
+                <div style={{ display: 'none' }}>
+                  <p className="text-sm font-medium leading-none">
+                    {/* Custom Avatar ID (optional) */}
+                    Selected Avatar
+                  </p>
+                  <Input
+                    placeholder="Enter a custom avatar ID"
+                    value={avatarId}
+                    onChange={(e) => setAvatarId(e.target.value)}
+                    isReadOnly
+                  />
+                </div>
                 {/* <Select
                   placeholder="Or select one from these example avatars"
                   size="md"
@@ -296,7 +314,14 @@ export default function InteractiveAvatar() {
                   }}
                 >
                   {STT_LANGUAGE_LIST.map((lang) => (
-                    <SelectItem key={lang.key}>
+                    <SelectItem 
+                      key={lang.key}
+                      startContent={
+                        <div className="w-6 h-6 rounded-full flex items-center justify-center bg-gray-100">
+                          <span className="text-lg">{lang.flag}</span>
+                        </div>
+                      }
+                    >
                       {lang.label}
                     </SelectItem>
                   ))}
@@ -307,6 +332,7 @@ export default function InteractiveAvatar() {
                 size="md"
                 variant="shadow"
                 onClick={startSession}
+                isDisabled={!knowledgeBase.trim()}
               >
                 Start session
               </Button>
@@ -330,21 +356,54 @@ export default function InteractiveAvatar() {
         <Divider />
         <CardFooter className="flex flex-col gap-3 relative">
           <Tabs
-            aria-label="Options"
+            aria-label="Chat mode options"
             selectedKey={chatMode}
             onSelectionChange={(v) => {
               handleChangeChatMode(v);
             }}
+            classNames={{
+              tabList: "gap-4",
+              cursor: "w-full bg-gradient-to-tr from-indigo-500 to-indigo-300",
+              tab: "h-10 w-10 data-[selected=true]:text-white",
+            }}
           >
-            <Tab key="text_mode" title="Text mode" />
-            <Tab key="voice_mode" title="Voice mode" />
+            <Tab
+              key="text_mode"
+              title={
+                <Tooltip content="Chat" delay={0}>
+                  <MessageSquareText
+                    size={24}
+                    className={`${chatMode === "text_mode"
+                        ? "text-white"
+                        : "text-indigo-500"
+                      } transition-colors`}
+                  />
+                </Tooltip>
+              }
+              aria-label="Text mode"
+            />
+            <Tab
+              key="voice_mode"
+              title={
+                <Tooltip content="Voice" delay={0}>
+                  <Mic
+                    size={24}
+                    className={`${chatMode === "voice_mode"
+                        ? "text-white"
+                        : "text-indigo-500"
+                      } transition-colors`}
+                  />
+                </Tooltip>
+              }
+              aria-label="Voice mode"
+            />
           </Tabs>
           {chatMode === "text_mode" ? (
             <div className="w-full flex relative">
               <InteractiveAvatarTextInput
                 disabled={!stream}
                 input={text}
-                label="Chat"
+                label=""
                 loading={isLoadingRepeat}
                 placeholder="Type something for the avatar to respond"
                 setInput={setText}

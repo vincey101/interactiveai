@@ -15,16 +15,19 @@ li {
 }
 
 .custom-scrollbar::-webkit-scrollbar-track {
-  background: #1f2937; /* gray-800 */
+  background: #1f2937;
+  /* gray-800 */
 }
 
 .custom-scrollbar::-webkit-scrollbar-thumb {
-  background: #4b5563; /* gray-600 */
+  background: #4b5563;
+  /* gray-600 */
   border-radius: 3px;
 }
 
 .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-  background: #6b7280; /* gray-500 */
+  background: #6b7280;
+  /* gray-500 */
 }
 
 /* For Firefox */

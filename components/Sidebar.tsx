@@ -2,12 +2,12 @@
 
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { 
-  HomeIcon, 
-  FolderIcon, 
-  ChartBarIcon, 
-  BanknotesIcon, 
-  BuildingOfficeIcon, 
+import {
+  HomeIcon,
+  FolderIcon,
+  ChartBarIcon,
+  BanknotesIcon,
+  BuildingOfficeIcon,
   BuildingStorefrontIcon,
   PlayIcon,
   ChatBubbleLeftIcon,
@@ -24,7 +24,7 @@ import { useRouter, usePathname } from 'next/navigation';
 const Sidebar = () => {
   const router = useRouter();
   const pathname = usePathname();
-  
+
   const [isProjectsOpen, setIsProjectsOpen] = useState(true);
   const [isInitialized, setIsInitialized] = useState(false);
 
@@ -51,7 +51,7 @@ const Sidebar = () => {
       // Add your logout logic here, for example:
       // await signOut() or
       // await fetch('/api/logout')
-      
+
       // After successful logout, redirect to login page
       router.push('/login');
     } catch (error) {
@@ -85,16 +85,15 @@ const Sidebar = () => {
       <div className="flex items-center h-16 px-6 border-b border-gray-700 bg-black">
         <h1 className="text-lg font-bold text-white">Avatar Studio</h1>
       </div>
-      
+
       {/* Main navigation - with custom scrollbar */}
       <nav className="flex-1 overflow-y-auto p-3 space-y-1.5 custom-scrollbar">
-        <Link 
-          href="/" 
-          className={`flex items-center px-4 py-2 text-[13px] ${
-            pathname === '/' 
-              ? 'bg-gray-800 text-white' 
+        <Link
+          href="/"
+          className={`flex items-center px-4 py-2 text-[13px] ${pathname === '/'
+              ? 'bg-gray-800 text-white'
               : 'text-gray-300 hover:bg-gray-800 hover:text-white'
-          } rounded-lg transition-colors group`}
+            } rounded-lg transition-colors group`}
         >
           <HomeIcon className="w-[18px] h-[18px] mr-2.5 group-hover:text-white" />
           Dashboard
@@ -102,7 +101,7 @@ const Sidebar = () => {
 
         {/* Projects dropdown */}
         <div>
-          <button 
+          <button
             onClick={toggleProjects}
             className="flex items-center justify-between w-full px-4 py-2 text-[13px] text-gray-300 hover:bg-gray-800 hover:text-white rounded-lg transition-colors group"
           >
@@ -118,24 +117,22 @@ const Sidebar = () => {
           </button>
           {isProjectsOpen && (
             <div className="ml-4 mt-1.5 space-y-1.5">
-              <Link 
-                href="/projects/create-avatar" 
-                className={`flex items-center px-4 py-2 text-[13px] ${
-                  pathname === '/projects/create-avatar'
+              <Link
+                href="/projects/create-avatar"
+                className={`flex items-center px-4 py-2 text-[13px] ${pathname === '/projects/create-avatar'
                     ? 'bg-gray-800 text-white'
                     : 'text-gray-300 hover:bg-gray-800 hover:text-white'
-                } rounded-lg transition-colors group`}
+                  } rounded-lg transition-colors group`}
               >
                 <PlusIcon className="w-[18px] h-[18px] mr-2.5 group-hover:text-white" />
                 Interactive Avatar
               </Link>
-              <Link 
-                href="/projects/manage" 
-                className={`flex items-center px-4 py-2 text-[13px] ${
-                  pathname === '/projects/manage'
+              <Link
+                href="/projects/manage"
+                className={`flex items-center px-4 py-2 text-[13px] ${pathname === '/projects/manage'
                     ? 'bg-gray-800 text-white'
                     : 'text-gray-300 hover:bg-gray-800 hover:text-white'
-                } rounded-lg transition-colors group`}
+                  } rounded-lg transition-colors group`}
               >
                 <WrenchIcon className="w-[18px] h-[18px] mr-2.5 group-hover:text-white" />
                 Manage
@@ -144,121 +141,111 @@ const Sidebar = () => {
           )}
         </div>
 
-        <Link 
-          href="/traffic" 
-          className={`flex items-center px-4 py-2 text-[13px] ${
-            pathname === '/traffic'
+        <Link
+          href="/traffic"
+          className={`flex items-center px-4 py-2 text-[13px] ${pathname === '/traffic'
               ? 'bg-gray-800 text-white'
               : 'text-gray-300 hover:bg-gray-800 hover:text-white'
-          } rounded-lg transition-colors group`}
+            } rounded-lg transition-colors group`}
         >
           <ChartBarIcon className="w-[18px] h-[18px] mr-2.5 group-hover:text-white" />
           Traffic
         </Link>
 
-        <Link 
-          href="/swift-profit" 
-          className={`flex items-center px-4 py-2 text-[13px] ${
-            pathname === '/swift-profit'
+        <Link
+          href="/swift-profit"
+          className={`flex items-center px-4 py-2 text-[13px] ${pathname === '/swift-profit'
               ? 'bg-gray-800 text-white'
               : 'text-gray-300 hover:bg-gray-800 hover:text-white'
-          } rounded-lg transition-colors group`}
+            } rounded-lg transition-colors group`}
         >
           <BanknotesIcon className="w-[18px] h-[18px] mr-2.5 group-hover:text-white" />
           Swift Profit
         </Link>
 
-        <Link 
-          href="/multiple-income" 
-          className={`flex items-center px-4 py-2 text-[13px] ${
-            pathname === '/multiple-income'
+        <Link
+          href="/multiple-income"
+          className={`flex items-center px-4 py-2 text-[13px] ${pathname === '/multiple-income'
               ? 'bg-gray-800 text-white'
               : 'text-gray-300 hover:bg-gray-800 hover:text-white'
-          } rounded-lg transition-colors group`}
+            } rounded-lg transition-colors group`}
         >
           <BuildingOfficeIcon className="w-[18px] h-[18px] mr-2.5 group-hover:text-white" />
           Multiple Income
         </Link>
 
-        <Link 
-          href="/agency" 
-          className={`flex items-center px-4 py-2 text-[13px] ${
-            pathname === '/agency'
+        <Link
+          href="/agency"
+          className={`flex items-center px-4 py-2 text-[13px] ${pathname === '/agency'
               ? 'bg-gray-800 text-white'
               : 'text-gray-300 hover:bg-gray-800 hover:text-white'
-          } rounded-lg transition-colors group`}
+            } rounded-lg transition-colors group`}
         >
           <BuildingOfficeIcon className="w-[18px] h-[18px] mr-2.5 group-hover:text-white" />
           Agency
         </Link>
 
-        <Link 
-          href="/franchise" 
-          className={`flex items-center px-4 py-2 text-[13px] ${
-            pathname === '/franchise'
+        <Link
+          href="/franchise"
+          className={`flex items-center px-4 py-2 text-[13px] ${pathname === '/franchise'
               ? 'bg-gray-800 text-white'
               : 'text-gray-300 hover:bg-gray-800 hover:text-white'
-          } rounded-lg transition-colors group`}
+            } rounded-lg transition-colors group`}
         >
           <BuildingStorefrontIcon className="w-[18px] h-[18px] mr-2.5 group-hover:text-white" />
           Franchise
         </Link>
 
-        <Link 
-          href="/tutorial" 
-          className={`flex items-center px-4 py-2 text-[13px] ${
-            pathname === '/tutorial'
+        <Link
+          href="/tutorial"
+          className={`flex items-center px-4 py-2 text-[13px] ${pathname === '/tutorial'
               ? 'bg-gray-800 text-white'
               : 'text-gray-300 hover:bg-gray-800 hover:text-white'
-          } rounded-lg transition-colors group`}
+            } rounded-lg transition-colors group`}
         >
           <PlayIcon className="w-[18px] h-[18px] mr-2.5 group-hover:text-white" />
           Tutorial
         </Link>
 
-        <button 
+        <button
           onClick={handleSupportClick}
-          className={`flex items-center w-full px-4 py-2 text-[13px] ${
-            pathname === '/support'
+          className={`flex items-center w-full px-4 py-2 text-[13px] ${pathname === '/support'
               ? 'bg-gray-800 text-white'
               : 'text-gray-300 hover:bg-gray-800 hover:text-white'
-          } rounded-lg transition-colors group`}
+            } rounded-lg transition-colors group`}
         >
           <ChatBubbleLeftIcon className="w-[18px] h-[18px] mr-2.5 group-hover:text-white" />
           Support
         </button>
 
-        <button 
+        <button
           onClick={handleBonusesClick}
-          className={`flex items-center w-full px-4 py-2 text-[13px] ${
-            pathname === '/bonuses'
+          className={`flex items-center w-full px-4 py-2 text-[13px] ${pathname === '/bonuses'
               ? 'bg-gray-800 text-white'
               : 'text-gray-300 hover:bg-gray-800 hover:text-white'
-          } rounded-lg transition-colors group`}
+            } rounded-lg transition-colors group`}
         >
           <GiftIcon className="w-[18px] h-[18px] mr-2.5 group-hover:text-white" />
           Bonuses
         </button>
 
-        <Link 
-          href="/upgrade-plan" 
-          className={`flex items-center px-4 py-2 text-[13px] ${
-            pathname === '/upgrade-plan'
+        <Link
+          href="/upgrade-plan"
+          className={`flex items-center px-4 py-2 text-[13px] ${pathname === '/upgrade-plan'
               ? 'bg-gray-800 text-white'
               : 'text-gray-300 hover:bg-gray-800 hover:text-white'
-          } rounded-lg transition-colors group`}
+            } rounded-lg transition-colors group`}
         >
           <ArrowUpTrayIcon className="w-[18px] h-[18px] mr-2.5 group-hover:text-white" />
           Upgrade Plan
         </Link>
 
-        <Link 
-          href="/settings" 
-          className={`flex items-center px-4 py-2 text-[13px] ${
-            pathname === '/settings'
+        <Link
+          href="/settings"
+          className={`flex items-center px-4 py-2 text-[13px] ${pathname === '/settings'
               ? 'bg-gray-800 text-white'
               : 'text-gray-300 hover:bg-gray-800 hover:text-white'
-          } rounded-lg transition-colors group`}
+            } rounded-lg transition-colors group`}
         >
           <Cog6ToothIcon className="w-[18px] h-[18px] mr-2.5 group-hover:text-white" />
           Settings
@@ -267,7 +254,7 @@ const Sidebar = () => {
 
       {/* Logout button in a separate container at the bottom */}
       <div className="p-3 border-t border-gray-700">
-        <button 
+        <button
           onClick={handleLogout}
           className="flex items-center w-full px-4 py-2 text-[13px] text-gray-300 hover:bg-gray-800 hover:text-white rounded-lg transition-colors group"
         >
